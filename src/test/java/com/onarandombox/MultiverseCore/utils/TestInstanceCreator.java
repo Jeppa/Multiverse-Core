@@ -1,10 +1,9 @@
-/******************************************************************************
+/** ****************************************************************************
  * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
  * Multiverse 2 is licensed under the BSD License.                            *
  * For more information please check the README.md file included              *
  * with this project.                                                         *
- ******************************************************************************/
-
+ ***************************************************************************** */
 package com.onarandombox.MultiverseCore.utils;
 
 import buscript.Buscript;
@@ -51,6 +50,7 @@ import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.*;
 
 public class TestInstanceCreator {
+
     private MultiverseCore core;
     private Server mockServer;
     private CommandSender commandSender;
@@ -80,13 +80,6 @@ public class TestInstanceCreator {
                     "com.onarandombox.MultiverseCore.MultiverseCore"));
             when(pdf.getAuthors()).thenReturn(new ArrayList<String>());
             core = PowerMockito.spy(new MultiverseCore(mockPluginLoader, pdf, pluginDirectory, new File(pluginDirectory, "testPluginFile")));
-            PowerMockito.doAnswer(new Answer<Void>() {
-                @Override
-                public Void answer(InvocationOnMock invocation) throws Throwable {
-                    return null; // don't run metrics in tests
-                }
-            }).when(core, "setupMetrics");
-
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(core).getDataFolder();
 
@@ -95,7 +88,7 @@ public class TestInstanceCreator {
             core.setServerFolder(serverDirectory);
 
             // Add Core to the list of loaded plugins
-            JavaPlugin[] plugins = new JavaPlugin[] { core };
+            JavaPlugin[] plugins = new JavaPlugin[]{core};
 
             // Mock the Plugin Manager
             PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
@@ -115,8 +108,6 @@ public class TestInstanceCreator {
             File worldSkylandsFile = new File(core.getServerFolder(), "world_the_end");
             Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
             worldSkylandsFile.mkdirs();
-
-
 
             // Give the server some worlds
             when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {
@@ -156,53 +147,55 @@ public class TestInstanceCreator {
 
             when(mockServer.createWorld(Matchers.isA(WorldCreator.class))).thenAnswer(
                     new Answer<World>() {
-                        @Override
-                        public World answer(InvocationOnMock invocation) throws Throwable {
-                            WorldCreator arg;
-                            try {
-                                arg = (WorldCreator) invocation.getArguments()[0];
-                            } catch (Exception e) {
-                                return null;
-                            }
-                            // Add special case for creating null worlds.
-                            // Not sure I like doing it this way, but this is a special case
-                            if (arg.name().equalsIgnoreCase("nullworld")) {
-                                return MockWorldFactory.makeNewNullMockWorld(arg.name(), arg.environment(), arg.type());
-                            }
-                            return MockWorldFactory.makeNewMockWorld(arg.name(), arg.environment(), arg.type());
-                        }
-                    });
+                @Override
+                public World answer(InvocationOnMock invocation) throws Throwable {
+                    WorldCreator arg;
+                    try {
+                        arg = (WorldCreator) invocation.getArguments()[0];
+                    } catch (Exception e) {
+                        return null;
+                    }
+                    // Add special case for creating null worlds.
+                    // Not sure I like doing it this way, but this is a special case
+                    if (arg.name().equalsIgnoreCase("nullworld")) {
+                        return MockWorldFactory.makeNewNullMockWorld(arg.name(), arg.environment(), arg.type());
+                    }
+                    return MockWorldFactory.makeNewMockWorld(arg.name(), arg.environment(), arg.type());
+                }
+            });
 
             when(mockServer.unloadWorld(anyString(), anyBoolean())).thenReturn(true);
 
             // add mock scheduler
             BukkitScheduler mockScheduler = mock(BukkitScheduler.class);
             when(mockScheduler.scheduleSyncDelayedTask(any(Plugin.class), any(Runnable.class), anyLong())).
-            thenAnswer(new Answer<Integer>() {
-                @Override
-                public Integer answer(InvocationOnMock invocation) throws Throwable {
-                    Runnable arg;
-                    try {
-                        arg = (Runnable) invocation.getArguments()[1];
-                    } catch (Exception e) {
-                        return null;
-                    }
-                    arg.run();
-                    return null;
-                }});
+                    thenAnswer(new Answer<Integer>() {
+                        @Override
+                        public Integer answer(InvocationOnMock invocation) throws Throwable {
+                            Runnable arg;
+                            try {
+                                arg = (Runnable) invocation.getArguments()[1];
+                            } catch (Exception e) {
+                                return null;
+                            }
+                            arg.run();
+                            return null;
+                        }
+                    });
             when(mockScheduler.scheduleSyncDelayedTask(any(Plugin.class), any(Runnable.class))).
-            thenAnswer(new Answer<Integer>() {
-                @Override
-                public Integer answer(InvocationOnMock invocation) throws Throwable {
-                    Runnable arg;
-                    try {
-                        arg = (Runnable) invocation.getArguments()[1];
-                    } catch (Exception e) {
-                        return null;
-                    }
-                    arg.run();
-                    return null;
-                }});
+                    thenAnswer(new Answer<Integer>() {
+                        @Override
+                        public Integer answer(InvocationOnMock invocation) throws Throwable {
+                            Runnable arg;
+                            try {
+                                arg = (Runnable) invocation.getArguments()[1];
+                            } catch (Exception e) {
+                                return null;
+                            }
+                            arg.run();
+                            return null;
+                        }
+                    });
             when(mockServer.getScheduler()).thenReturn(mockScheduler);
 
             // Set server
@@ -250,7 +243,8 @@ public class TestInstanceCreator {
                 public Void answer(InvocationOnMock invocation) throws Throwable {
                     commandSenderLogger.info(ChatColor.stripColor((String) invocation.getArguments()[0]));
                     return null;
-                }}).when(commandSender).sendMessage(anyString());
+                }
+            }).when(commandSender).sendMessage(anyString());
             when(commandSender.getServer()).thenReturn(mockServer);
             when(commandSender.getName()).thenReturn("MockCommandSender");
             when(commandSender.isPermissionSet(anyString())).thenReturn(true);

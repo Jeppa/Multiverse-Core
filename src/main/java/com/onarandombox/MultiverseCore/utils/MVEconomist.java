@@ -213,7 +213,7 @@ public class MVEconomist {
 
         private static String getFormattedPrice(double amount, int currency) {
             if (isItemCurrency(currency)) {
-                Material m = Material.getMaterial(currency);
+                Material m = Material.getMaterial(String.valueOf(currency));
                 return m != null ? amount + " " + m.toString() : "NO ITEM FOUND";
             } else {
                 return "";
@@ -226,7 +226,7 @@ public class MVEconomist {
 
         private static boolean hasEnough(Player player, double amount, int currency) {
             if (isItemCurrency(currency)) {
-                return player.getInventory().contains(currency, (int) amount);
+                return player.getInventory().contains(Material.valueOf(String.valueOf(currency)), (int) amount);
             } else {
                 return true;
             }
@@ -245,14 +245,14 @@ public class MVEconomist {
         }
 
         private static void giveItem(Player player, double amount, int type) {
-            ItemStack item = new ItemStack(type, (int) amount);
+            ItemStack item = new ItemStack(Material.valueOf(String.valueOf(type)), (int) amount);
             player.getInventory().addItem(item);
             showReceipt(player, (amount * -1), type);
         }
 
         private static void takeItem(Player player, double amount, int type) {
             int removed = 0;
-            HashMap<Integer, ItemStack> items = (HashMap<Integer, ItemStack>) player.getInventory().all(type);
+            HashMap<Integer, ItemStack> items = (HashMap<Integer, ItemStack>) player.getInventory().all(Material.valueOf(String.valueOf(type)));
             for (int i : items.keySet()) {
                 if (removed >= amount) {
                     break;

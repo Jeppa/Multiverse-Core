@@ -90,7 +90,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -101,11 +100,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.mcstats.Metrics;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -335,16 +332,10 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
             this.chatListener = new MVPlayerChatListener(this, this.playerListener);
         }
         getServer().getPluginManager().registerEvents(this.chatListener, this);
-        /*
-        // Check to see if spout was already loaded (most likely):
-        if (this.getServer().getPluginManager().getPlugin("Spout") != null) {
-            this.setSpout();
-            this.log(Level.INFO, "Spout integration enabled.");
-        }
-        */
 
         this.initializeBuscript();
-        this.setupMetrics();
+        //this.setupMetrics(); - Disable until setup for bstats
+        new Metrics(this);
 
         // Output a little snippet to show it's enabled.
         Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
@@ -359,97 +350,99 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
         buscript.setScriptVariable("multiverse", this);
     }
 
-    /**
-     * Plotter for Environment-Values.
-     */
-    private static final class EnvironmentPlotter extends Metrics.Plotter {
-        private MultiverseCore core;
-        private final Environment env;
-
-        public EnvironmentPlotter(MultiverseCore core, Environment env) {
-            super(envToString(env));
-            this.core = core;
-            this.env = env;
-        }
-
-        private static String envToString(Environment env) {
-            return new StringBuilder().append(env.name().toUpperCase().charAt(0))
-                    .append(env.name().toLowerCase().substring(1)).toString();
-        }
-
-        @Override
-        public int getValue() {
-            int count = 0;
-            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
-                if (w.getEnvironment() == env)
-                    count++;
-            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, env));
-            return count;
-        }
-    }
-
-    /**
-     * Plotter for Generator-Values.
-     */
-    private static final class GeneratorPlotter extends Metrics.Plotter {
-        private MultiverseCore core;
-        private final String gen;
-
-        public GeneratorPlotter(MultiverseCore core, String gen) {
-            super(gen);
-            this.core = core;
-            this.gen = gen;
-        }
-
-        @Override
-        public int getValue() {
-            int count = 0;
-            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
-                if (gen.equals(w.getGenerator()))
-                    count++;
-            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, gen));
-            return count;
-        }
-    }
-
-    private void setupMetrics() {
-        try {
-            Metrics m = new Metrics(this);
-
-            Metrics.Graph envGraph = m.createGraph("Worlds by environment");
-            for (Environment env : Environment.values())
-                envGraph.addPlotter(new EnvironmentPlotter(this, env));
-
-            Metrics.Graph loadedWorldsGraph = m.createGraph("Worlds by environment");
-            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Loaded worlds") {
-                @Override
-                public int getValue() {
-                    return getMVWorldManager().getMVWorlds().size();
-                }
-            });
-            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Total number of worlds") {
-                @Override
-                public int getValue() {
-                    return getMVWorldManager().getMVWorlds().size()
-                            + getMVWorldManager().getUnloadedWorlds().size();
-                }
-            });
-
-            Set<String> gens = new HashSet<String>();
-            for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds())
-                gens.add(w.getGenerator());
-            gens.remove(null);
-            gens.remove("null");
-            Metrics.Graph genGraph = m.createGraph("Custom Generators");
-            for (String gen : gens)
-                genGraph.addPlotter(new GeneratorPlotter(this, gen));
-
-            m.start();
-            log(Level.FINE, "Metrics have run!");
-        } catch (Exception e) {
-            log(Level.WARNING, "There was an issue while enabling metrics: " + e.getMessage());
-        }
-    }
+    //Redo this entire section for bstats
+//    
+//    /**
+//     * Plotter for Environment-Values.
+//     */
+//    private static final class EnvironmentPlotter extends Metrics.Plotter {
+//        private MultiverseCore core;
+//        private final Environment env;
+//
+//        public EnvironmentPlotter(MultiverseCore core, Environment env) {
+//            super(envToString(env));
+//            this.core = core;
+//            this.env = env;
+//        }
+//
+//        private static String envToString(Environment env) {
+//            return new StringBuilder().append(env.name().toUpperCase().charAt(0))
+//                    .append(env.name().toLowerCase().substring(1)).toString();
+//        }
+//
+//        @Override
+//        public int getValue() {
+//            int count = 0;
+//            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
+//                if (w.getEnvironment() == env)
+//                    count++;
+//            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, env));
+//            return count;
+//        }
+//    }
+//
+//    /**
+//     * Plotter for Generator-Values.
+//     */
+//    private static final class GeneratorPlotter extends Metrics.Plotter {
+//        private MultiverseCore core;
+//        private final String gen;
+//
+//        public GeneratorPlotter(MultiverseCore core, String gen) {
+//            super(gen);
+//            this.core = core;
+//            this.gen = gen;
+//        }
+//
+//        @Override
+//        public int getValue() {
+//            int count = 0;
+//            for (MultiverseWorld w : core.getMVWorldManager().getMVWorlds())
+//                if (gen.equals(w.getGenerator()))
+//                    count++;
+//            core.log(Level.FINE, String.format("Tracking %d worlds of type %s", count, gen));
+//            return count;
+//        }
+//    }
+//
+//    private void setupMetrics() {
+//        try {
+//            Metrics m = new Metrics(this);
+//
+//            Metrics.Graph envGraph = m.createGraph("Worlds by environment");
+//            for (Environment env : Environment.values())
+//                envGraph.addPlotter(new EnvironmentPlotter(this, env));
+//
+//            Metrics.Graph loadedWorldsGraph = m.createGraph("Worlds by environment");
+//            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Loaded worlds") {
+//                @Override
+//                public int getValue() {
+//                    return getMVWorldManager().getMVWorlds().size();
+//                }
+//            });
+//            loadedWorldsGraph.addPlotter(new Metrics.Plotter("Total number of worlds") {
+//                @Override
+//                public int getValue() {
+//                    return getMVWorldManager().getMVWorlds().size()
+//                            + getMVWorldManager().getUnloadedWorlds().size();
+//                }
+//            });
+//
+//            Set<String> gens = new HashSet<String>();
+//            for (MultiverseWorld w : this.getMVWorldManager().getMVWorlds())
+//                gens.add(w.getGenerator());
+//            gens.remove(null);
+//            gens.remove("null");
+//            Metrics.Graph genGraph = m.createGraph("Custom Generators");
+//            for (String gen : gens)
+//                genGraph.addPlotter(new GeneratorPlotter(this, gen));
+//
+//            m.start();
+//            log(Level.FINE, "Metrics have run!");
+//        } catch (Exception e) {
+//            log(Level.WARNING, "There was an issue while enabling metrics: " + e.getMessage());
+//        }
+//    }
 
     private void initializeDestinationFactory() {
         this.destFactory = new DestinationFactory(this);

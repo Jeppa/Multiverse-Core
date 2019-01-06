@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.onarandombox.multiversecore</groupId>
     <artifactId>Multiverse-Core</artifactId>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
     <name>Multiverse-Core</name>
     <description>World Management Plugin</description>
     <properties>
@@ -265,17 +265,10 @@
         <dependency>
            <groupId>org.spigotmc</groupId>
            <artifactId>spigot-api</artifactId>
-           <version>1.12-R0.1-SNAPSHOT</version>
+           <version>1.13.2-R0.1-SNAPSHOT</version>
            <scope>compile</scope>
         </dependency>
         <!--Spigot API-->
-        <!-- Start of Spout (disabled because we aren't using it)
-        <dependency>
-            <groupId>org.getspout</groupId>
-            <artifactId>spoutpluginapi</artifactId>
-            <version>dev-SNAPSHOT</version>
-        </dependency>
-             End of Spout -->
         <!-- SerializationConfig Dependency -->
         <dependency>
             <groupId>me.main__.util</groupId>
@@ -318,21 +311,6 @@
             <scope>compile</scope>
         </dependency>
         <!-- End of Buscript Dependency -->
-        <!-- Start of Metrics Dependency -->
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics</artifactId>
-            <version>R8-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- End of Metrics Dependency -->
         <!-- Start of Logging Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>

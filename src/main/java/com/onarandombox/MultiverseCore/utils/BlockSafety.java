@@ -1,13 +1,14 @@
-/******************************************************************************
+/** ****************************************************************************
  * Multiverse 2 Copyright (c) the Multiverse Team 2011.                       *
  * Multiverse 2 is licensed under the BSD License.                            *
  * For more information please check the README.md file included              *
  * with this project.                                                         *
- ******************************************************************************/
-
+ ***************************************************************************** */
 package com.onarandombox.MultiverseCore.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
+import java.util.EnumSet;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,8 +23,49 @@ import org.bukkit.entity.Vehicle;
 @Deprecated
 public class BlockSafety {
 
+    //This is definitely missing nonSolidBlocks
+    private static final Set<Material> nonSolidBlocks = EnumSet.of(
+            Material.ACACIA_BUTTON, Material.ACACIA_SAPLING, Material.ACTIVATOR_RAIL, Material.AIR, 
+            Material.ALLIUM, Material.ATTACHED_MELON_STEM, Material.ATTACHED_PUMPKIN_STEM, 
+            Material.AZURE_BLUET, Material.BEETROOTS, Material.BIRCH_BUTTON, Material.BIRCH_SAPLING, 
+            Material.BLACK_CARPET, Material.BLUE_CARPET, Material.BLUE_ORCHID, Material.BRAIN_CORAL, 
+            Material.BRAIN_CORAL_FAN, Material.BRAIN_CORAL_WALL_FAN, Material.BROWN_CARPET, Material.BROWN_MUSHROOM, 
+            Material.BUBBLE_COLUMN, Material.BUBBLE_CORAL, Material.BUBBLE_CORAL_FAN, Material.BUBBLE_CORAL_WALL_FAN, 
+            Material.CARROTS, Material.CAVE_AIR, Material.CHORUS_FLOWER, Material.CHORUS_PLANT, Material.COBWEB, 
+            Material.COCOA, Material.COMPARATOR, Material.CREEPER_HEAD, Material.CREEPER_WALL_HEAD, Material.CYAN_CARPET, 
+            Material.DANDELION, Material.DARK_OAK_BUTTON, Material.DARK_OAK_SAPLING, Material.DEAD_BUSH, 
+            Material.DETECTOR_RAIL, Material.DRAGON_HEAD, Material.DRAGON_WALL_HEAD, Material.END_GATEWAY, 
+            Material.END_PORTAL, Material.END_ROD, Material.FERN, Material.FIRE, Material.FIRE_CORAL, 
+            Material.FIRE_CORAL_FAN, Material.FIRE_CORAL_WALL_FAN, Material.FLOWER_POT, Material.GRASS, 
+            Material.GRAY_CARPET, Material.GREEN_CARPET, Material.HORN_CORAL, Material.HORN_CORAL_FAN, 
+            Material.HORN_CORAL_WALL_FAN, Material.JUNGLE_BUTTON, Material.JUNGLE_SAPLING, Material.KELP, 
+            Material.KELP_PLANT, Material.LADDER, Material.LARGE_FERN, Material.LAVA, Material.LEVER, 
+            Material.LIGHT_BLUE_CARPET, Material.LIGHT_GRAY_CARPET, Material.LILAC, Material.LILY_PAD, 
+            Material.LIME_CARPET, Material.MAGENTA_CARPET, Material.MELON_STEM, Material.NETHER_PORTAL, 
+            Material.NETHER_WART, Material.OAK_BUTTON, Material.OAK_SAPLING, Material.ORANGE_CARPET, 
+            Material.ORANGE_TULIP, Material.OXEYE_DAISY, Material.PEONY, Material.PINK_CARPET, Material.PINK_TULIP, 
+            Material.PLAYER_HEAD, Material.PLAYER_WALL_HEAD, Material.POPPY, Material.POTATOES, 
+            Material.POTTED_ACACIA_SAPLING, Material.POTTED_ALLIUM, Material.POTTED_AZURE_BLUET, 
+            Material.POTTED_BIRCH_SAPLING, Material.POTTED_BLUE_ORCHID, Material.POTTED_BROWN_MUSHROOM, 
+            Material.POTTED_CACTUS, Material.POTTED_DANDELION, Material.POTTED_DARK_OAK_SAPLING, 
+            Material.POTTED_DEAD_BUSH, Material.POTTED_FERN, Material.POTTED_JUNGLE_SAPLING, Material.POTTED_OAK_SAPLING, 
+            Material.POTTED_ORANGE_TULIP, Material.POTTED_OXEYE_DAISY, Material.POTTED_PINK_TULIP, Material.POTTED_POPPY, 
+            Material.POTTED_RED_MUSHROOM, Material.POTTED_RED_TULIP, Material.POTTED_SPRUCE_SAPLING, 
+            Material.POTTED_WHITE_TULIP, Material.POWERED_RAIL, Material.PUMPKIN_STEM, Material.PURPLE_CARPET, 
+            Material.RAIL, Material.REDSTONE_TORCH, Material.REDSTONE_WALL_TORCH, Material.REDSTONE_WIRE, 
+            Material.RED_CARPET, Material.RED_MUSHROOM, Material.RED_TULIP, Material.REPEATER, Material.ROSE_BUSH, 
+            Material.SEAGRASS, Material.SEA_PICKLE, Material.SKELETON_SKULL, Material.SKELETON_WALL_SKULL, Material.SNOW, 
+            Material.SPRUCE_BUTTON, Material.SPRUCE_SAPLING, Material.STONE_BUTTON, Material.STRUCTURE_VOID, 
+            Material.SUGAR_CANE, Material.SUNFLOWER, Material.TALL_GRASS, Material.TALL_SEAGRASS, Material.TORCH, 
+            Material.TRIPWIRE, Material.TRIPWIRE_HOOK, Material.TUBE_CORAL, Material.TUBE_CORAL_FAN, 
+            Material.TUBE_CORAL_WALL_FAN, Material.VINE, Material.VOID_AIR, Material.WALL_TORCH, 
+            Material.WATER, Material.WHEAT, Material.WHITE_CARPET, Material.WHITE_TULIP, Material.WITHER_SKELETON_SKULL, 
+            Material.WITHER_SKELETON_WALL_SKULL, Material.YELLOW_CARPET, Material.ZOMBIE_HEAD, Material.ZOMBIE_WALL_HEAD
+    );
+    
     /**
      * This function checks whether the block at the given coordinates are above air or not.
+     *
      * @param l The {@link Location} of the block.
      * @return True if the block at that {@link Location} is above air.
      */
@@ -40,6 +82,7 @@ public class BlockSafety {
 
     /**
      * Checks if a player can spawn safely at the given coordinates.
+     *
      * @param world The {@link World}.
      * @param x The x-coordinate.
      * @param y The y-coordinate.
@@ -52,8 +95,7 @@ public class BlockSafety {
     }
 
     /**
-     * This function checks whether the block at the coordinates given is safe or not by checking for Lava/Fire/Air
-     * etc. This also ensures there is enough space for a player to spawn!
+     * This function checks whether the block at the coordinates given is safe or not by checking for Lava/Fire/Air etc. This also ensures there is enough space for a player to spawn!
      *
      * @param l The {@link Location}
      * @return Whether the player can spawn safely at the given {@link Location}
@@ -80,7 +122,7 @@ public class BlockSafety {
             return false;
         }
 
-        if (downOne.getBlock().getType() == Material.LAVA || downOne.getBlock().getType() == Material.STATIONARY_LAVA) {
+        if (downOne.getBlock().getType() == Material.LAVA) {
             Logging.finest("Error Here (downOne)? (%s)[%s]", downOne.getBlock().getType(),
                     this.isSolidBlock(downOne.getBlock().getType()));
             return false;
@@ -102,6 +144,7 @@ public class BlockSafety {
 
     /**
      * Gets the location of the top block at the specified {@link Location}.
+     *
      * @param l Any {@link Location}.
      * @return The {@link Location} of the top-block.
      */
@@ -119,6 +162,7 @@ public class BlockSafety {
 
     /**
      * Gets the location of the top block at the specified {@link Location}.
+     *
      * @param l Any {@link Location}.
      * @return The {@link Location} of the top-block.
      */
@@ -137,79 +181,20 @@ public class BlockSafety {
     /*
      * If someone has a better way of this... Please either tell us, or submit a pull request!
      */
-    private boolean isSolidBlock(Material type) {
-        switch (type) {
-            case AIR:
-                return false;
-            case SNOW:
-                return false;
-            case TRAP_DOOR:
-                return false;
-            case TORCH:
-                return false;
-            case YELLOW_FLOWER:
-                return false;
-            case RED_ROSE:
-                return false;
-            case RED_MUSHROOM:
-                return false;
-            case BROWN_MUSHROOM:
-                return false;
-            case REDSTONE:
-                return false;
-            case REDSTONE_WIRE:
-                return false;
-            case RAILS:
-                return false;
-            case POWERED_RAIL:
-                return false;
-            case REDSTONE_TORCH_ON:
-                return false;
-            case REDSTONE_TORCH_OFF:
-                return false;
-            case DEAD_BUSH:
-                return false;
-            case SAPLING:
-                return false;
-            case STONE_BUTTON:
-                return false;
-            case LEVER:
-                return false;
-            case LONG_GRASS:
-                return false;
-            case PORTAL:
-                return false;
-            case STONE_PLATE:
-                return false;
-            case WOOD_PLATE:
-                return false;
-            case SEEDS:
-                return false;
-            case SUGAR_CANE_BLOCK:
-                return false;
-            case WALL_SIGN:
-                return false;
-            case SIGN_POST:
-                return false;
-            case WOODEN_DOOR:
-                return false;
-            case STATIONARY_WATER:
-                return false;
-            case WATER:
-                return false;
-            default:
-                return true;
-        }
+    private static boolean isSolidBlock(Material type) {
+        return !nonSolidBlocks.contains(type);
+
     }
 
     /**
      * Checks if an entity would be on track at the specified {@link Location}.
+     *
      * @param l The {@link Location}.
      * @return True if an entity would be on tracks at the specified {@link Location}.
      */
     public boolean isEntitiyOnTrack(Location l) {
         Material currentBlock = l.getBlock().getType();
-        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAILS);
+        return (currentBlock == Material.POWERED_RAIL || currentBlock == Material.DETECTOR_RAIL || currentBlock == Material.RAIL);
     }
 
     // TODO maybe remove this?
@@ -240,10 +225,10 @@ public class BlockSafety {
         }
         Location oneBelow = l.clone();
         oneBelow.subtract(0, 1, 0);
-        if (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER) {
+        if (oneBelow.getBlock().getType() == Material.WATER) {
             Location twoBelow = oneBelow.clone();
             twoBelow.subtract(0, 1, 0);
-            return (oneBelow.getBlock().getType() == Material.WATER || oneBelow.getBlock().getType() == Material.STATIONARY_WATER);
+            return (oneBelow.getBlock().getType() == Material.WATER);
         }
         if (oneBelow.getBlock().getType() != Material.AIR) {
             return false;
@@ -253,6 +238,7 @@ public class BlockSafety {
 
     /**
      * Checks if the specified {@link Minecart} can spawn safely.
+     *
      * @param cart The {@link Minecart}.
      * @return True if the minecart can spawn safely.
      */
@@ -268,6 +254,7 @@ public class BlockSafety {
 
     /**
      * Checks if the specified {@link Vehicle} can spawn safely.
+     *
      * @param vehicle The {@link Vehicle}.
      * @return True if the vehicle can spawn safely.
      */
